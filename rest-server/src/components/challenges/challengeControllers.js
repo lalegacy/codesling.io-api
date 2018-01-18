@@ -14,6 +14,7 @@ export const addChallengeController = async (req, res) => {
     /**
      * 
      */
+    console.log('client payload', req.body);
     const { rows } = await addChallengeQuery(req.body);
     success('addChallengeController - successfully added challenge ', rows[0]);
     req.body.challenge_id = rows[0].id;
