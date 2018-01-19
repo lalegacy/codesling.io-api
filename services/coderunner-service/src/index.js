@@ -28,8 +28,25 @@ app.post('/submit-code', (req, res) => {
             res.send(stderrFormatted);
           } else {
             console.log('this is req.body: ', req.body);
-            res.write(JSON.stringify(stdout));
+            // res.write(JSON.stringify(stdout));
+            /* Boolean Case
+            if (typeof req.body.test === 'boolean') {
+              const return = stdout.trim() === 'true' || stdout.trim() === 'false'
+            }
+            res.write(JSON.stringify(return));
             res.send();
+            */
+
+            /* Array case
+            let match = true;
+            let sampleArr = [1, 2, 3, 4]
+            for (let i = 0; i < JSON.parse(this.state.stdout).length; i++) {
+              console.log('here is arr stdout[i]', JSON.parse(this.state.stdout)[i]);
+              console.log('here is props.tests[i]', JSON.parse(this.props.tests[0]['content'])[i]);
+              console.log('at index: ', i, ' the elements equal: ', JSON.parse(this.state.stdout)[i] === JSON.parse(this.props.tests[0]['content'])[i]);
+              match = JSON.parse(stdout)[i] === JSON.parse(req.body.code[0]['content'])[i] ? match : false;
+            }
+            */
           }
         });
       }
