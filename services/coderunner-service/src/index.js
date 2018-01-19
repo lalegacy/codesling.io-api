@@ -29,6 +29,11 @@ app.post('/submit-code', (req, res) => {
           } else {
             console.log('this is req.body: ', req.body);
             // res.write(JSON.stringify(stdout));
+
+            // req.body.tests.forEach((test) => {
+            //   // test is an obj
+            //   if (test[''])
+            // })
             /* Boolean Case
             if (typeof req.body.test === 'boolean') {
               const return = stdout.trim() === 'true' || stdout.trim() === 'false'
