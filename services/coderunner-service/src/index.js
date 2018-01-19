@@ -27,6 +27,7 @@ app.post('/submit-code', (req, res) => {
             stderrFormatted = stderrFormatted.join('\n');
             res.send(stderrFormatted);
           } else {
+            console.log('this is req.body: ', req.body);
             res.write(JSON.stringify(stdout));
             res.send();
           }
