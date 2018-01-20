@@ -27,31 +27,58 @@ app.post('/submit-code', (req, res) => {
             stderrFormatted = stderrFormatted.join('\n');
             res.send(stderrFormatted);
           } else {
-            console.log('this is req.body: ', req.body);
-            // res.write(JSON.stringify(stdout));
-
-            // req.body.tests.forEach((test) => {
-            //   // test is an obj
-            //   if (test[''])
-            // })
-            /* Boolean Case
-            if (typeof req.body.test === 'boolean') {
-              const return = stdout.trim() === 'true' || stdout.trim() === 'false'
+            let expectedOut;
+            let expectedType;
+            if (((req.body.tests[0].type === 'output').toString()) === 'true') {
+              expectedOut = req.body.tests[0].content;
+              expectedType = req.body.tests[1].content;
+            } else if (((req.body.tests[1].type === 'output').toString()) === 'true') {
+              expectedOut = req.body.tests[1].content;
+              expectedType = req.body.tests[0].content;
+            } else {
+              expectedOut = '';
+              expectedType = '';
             }
-            res.write(JSON.stringify(return));
-            res.send();
-            */
-
-            /* Array case
-            let match = true;
-            let sampleArr = [1, 2, 3, 4]
-            for (let i = 0; i < JSON.parse(this.state.stdout).length; i++) {
-              console.log('here is arr stdout[i]', JSON.parse(this.state.stdout)[i]);
-              console.log('here is props.tests[i]', JSON.parse(this.props.tests[0]['content'])[i]);
-              console.log('at index: ', i, ' the elements equal: ', JSON.parse(this.state.stdout)[i] === JSON.parse(this.props.tests[0]['content'])[i]);
-              match = JSON.parse(stdout)[i] === JSON.parse(req.body.code[0]['content'])[i] ? match : false;
+            if (expectedType === 'string') {
+              const rs = (stdout.trim() === expectedOut.trim()).toString();
+              res.write(JSON.stringify(rs));
+              res.send();
+            } else if (expectedType === 'number') {
+              // typeof parseInt(stdout.trim(), 10)); // number
+              // typeof parseInt(expectedOut.trim(), 10)); // number
+              const rs = (stdout.trim() === expectedOut.trim()).toString();
+              res.write(JSON.stringify(rs));
+              res.send();
+            } else if (expectedType === 'boolean') {
+              const rs = (stdout.trim() === expectedOut.trim()).toString();
+              res.write(JSON.stringify(rs));
+              res.send();
+            } else if (expectedType === 'array') {
+              // Array.isArray(JSON.parse(stdout));
+              // Array.isArray(JSON.parse(expectedOut));
+              let elementsAreEqual = true;
+              for (let i = 0; i < JSON.parse(stdout).length; i += 1) {
+                elementsAreEqual = JSON.parse(stdout)[i] === JSON.parse(expectedOut)[i] ?
+                  elementsAreEqual
+                  :
+                  false;
+              }
+              res.write(JSON.stringify(elementsAreEqual.toString()));
+              res.send();
+            } else if (expectedType === 'object') {
+              let areObjsEqual = true;
+              const so = eval(`(${stdout})`);
+              const eo = eval(`(${expectedOut})`);
+              const ks = Object.keys(so);
+              ks.forEach((key) => {
+                areObjsEqual = so[key] === eo[key] ? areObjsEqual : false;
+              });
+              res.write(JSON.stringify(areObjsEqual.toString()));
+              res.send();
+            } else {
+              res.write('bad test');
+              res.send();
             }
-            */
           }
         });
       }
